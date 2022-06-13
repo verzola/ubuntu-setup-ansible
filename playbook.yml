@@ -121,6 +121,9 @@
         dest: ~/.tmux.conf
         state: link
 
+    - name: Install tmux plugins
+      shell: ~/.tmux/plugins/tpm/scripts/install_plugins.sh
+
     - name: Clone vim configuration
       git:
         repo: https://github.com/verzola/.vimrc.git
@@ -139,3 +142,14 @@
         src: ~/projects/verzola/vimrc/.vimrc
         dest: ~/.config/nvim/init.vim
         state: link
+
+    - name: Install neovim plugins
+      shell: vim +PlugInstall +qall
+
+    - name: Clone aliases configuration
+      git:
+        repo: https://github.com/verzola/aliases.git
+        dest: ~/projects/verzola/aliases
+        clone: yes
+        update: yes
+
