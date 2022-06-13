@@ -20,7 +20,15 @@
           - ca-certificates
           - build-essential
           - software-properties-common
+          - openjdk-11-jdk
+          - zip
+          - unzip
         state: latest
+
+    - name: Update packages
+      become: true
+      apt:
+        upgrade: dist
 
     - name: Add neovim ppa
       become: true
@@ -29,25 +37,18 @@
         repo: 'ppa:neovim-ppa/stable'
         state: present
 
-    - name: Add telegram ppa
-      become: true
-      apt_repository:
-        validate_certs: no
-        repo: 'ppa:atareao/telegram'
-        state: present
-
     - name: Add nodejs apt key
       become: true
       apt_key:
         url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
         state: present
 
-    - name: add nodejs repository
-      become: true
-      apt_repository:
-        repo: deb https://deb.nodesource.com/node_16.x {{ ansible_lsb.codename }} main
-        state: present
-        update_cache: yes
+    # - name: add nodejs repository
+    #   become: true
+    #   apt_repository:
+    #     repo: deb https://deb.nodesource.com/setup_16.x focal main
+    #     state: present
+    #     update_cache: true
 
     - name: install nodejs
       become: true
@@ -55,18 +56,11 @@
         name: nodejs
         state: present
 
-    - name: Update packages
+    - name: Install "yarn" node.js package globally.
       become: true
-      register: updatesys
-      apt:
-        name: "*"
-        state: latest
-        update_cache: yes
-
-    - name: Display the last line of the previous task to check the stats
-      become: true
-      debug:
-        msg:  "{{updatesys.stdout_lines|last}}"
+      npm:
+        name: yarn
+        global: yes
 
     - name: Remove useless packages from the cache
       become: true
@@ -144,7 +138,7 @@
         state: link
 
     - name: Install neovim plugins
-      shell: vim +PlugInstall +qall
+      shell: nvim +PlugUpdate +qall
 
     - name: Clone aliases configuration
       git:
