@@ -1,0 +1,141 @@
+---
+- name: Install and update packages
+  hosts: localhost
+  tasks:
+    - name: Install packages
+      become: true
+      apt:
+        update_cache: yes
+        name:
+          - vim
+          - git
+          - zsh
+          - bat
+          - tmux
+          - curl
+          - htop
+          - ansible
+          - openssh-server
+          - apt-transport-https
+          - ca-certificates
+          - build-essential
+          - software-properties-common
+        state: latest
+
+    - name: Add neovim ppa
+      become: true
+      apt_repository:
+        validate_certs: no
+        repo: 'ppa:neovim-ppa/stable'
+        state: present
+
+    - name: Add telegram ppa
+      become: true
+      apt_repository:
+        validate_certs: no
+        repo: 'ppa:atareao/telegram'
+        state: present
+
+    - name: Add nodejs apt key
+      become: true
+      apt_key:
+        url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+        state: present
+
+    - name: add nodejs repository
+      become: true
+      apt_repository:
+        repo: deb https://deb.nodesource.com/node_16.x {{ ansible_lsb.codename }} main
+        state: present
+        update_cache: yes
+
+    - name: install nodejs
+      become: true
+      apt:
+        name: nodejs
+        state: present
+
+    - name: Update packages
+      become: true
+      register: updatesys
+      apt:
+        name: "*"
+        state: latest
+        update_cache: yes
+
+    - name: Display the last line of the previous task to check the stats
+      become: true
+      debug:
+        msg:  "{{updatesys.stdout_lines|last}}"
+
+    - name: Remove useless packages from the cache
+      become: true
+      apt:
+        autoclean: yes
+
+    - name: Remove dependencies that are no longer required
+      become: true
+      apt:
+        autoremove: yes
+
+    - name: Configure Git username
+      git_config:
+        name: user.name
+        scope: global
+        value: 'Gustavo Verzola'
+
+    - name: Configure Git e-mail
+      git_config:
+        name: user.email
+        scope: global
+        value: verzola@gmail.com
+
+    - name: Create my projects folder
+      file:
+        path: ~/projects/verzola
+        state: directory
+
+    - name: Clone zsh configuration
+      git:
+        repo: https://github.com/verzola/.zshrc.git
+        dest: ~/projects/verzola/zshrc
+        clone: yes
+        update: yes
+
+    - name: Create zsh symbolic link
+      file:
+        src: ~/projects/verzola/zshrc/.zshrc
+        dest: ~/.zshrc
+        state: link
+
+    - name: Clone tmux configuration
+      git:
+        repo: https://github.com/verzola/.tmux.conf.git
+        dest: ~/projects/verzola/tmux.conf
+        clone: yes
+        update: yes
+
+    - name: Create tmux symbolic link
+      file:
+        src: ~/projects/verzola/tmux.conf/.tmux.conf
+        dest: ~/.tmux.conf
+        state: link
+
+    - name: Clone vim configuration
+      git:
+        repo: https://github.com/verzola/.vimrc.git
+        dest: ~/projects/verzola/vimrc
+        clone: yes
+        update: yes
+
+    - name: Create vim symbolic link
+      file:
+        src: ~/projects/verzola/vimrc/.vimrc
+        dest: ~/.vimrc
+        state: link
+
+    - name: Create neovim symbolic link
+      file:
+        src: ~/projects/verzola/vimrc/.vimrc
+        dest: ~/.config/nvim/init.vim
+        state: link
