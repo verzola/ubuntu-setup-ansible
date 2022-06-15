@@ -2,6 +2,20 @@
 - name: Install and update packages
   hosts: localhost
   tasks:
+    - name: Add neovim ppa
+      become: true
+      apt_repository:
+        validate_certs: no
+        repo: 'ppa:neovim-ppa/stable'
+        state: present
+
+    - name: Add ansible ppa
+      become: true
+      apt_repository:
+        validate_certs: no
+        repo: 'ppa:ansible/ansible'
+        state: present
+
     - name: Install packages
       become: true
       apt:
@@ -23,6 +37,8 @@
           - openjdk-11-jdk
           - zip
           - unzip
+          - neovim
+          - ansible
         state: latest
 
     - name: Update packages
@@ -30,12 +46,15 @@
       apt:
         upgrade: dist
 
-    - name: Add neovim ppa
+    - name: Remove useless packages from the cache
       become: true
-      apt_repository:
-        validate_certs: no
-        repo: 'ppa:neovim-ppa/stable'
-        state: present
+      apt:
+        autoclean: yes
+
+    - name: Remove dependencies that are no longer required
+      become: true
+      apt:
+        autoremove: yes
 
     - name: Add nodejs apt key
       become: true
@@ -61,16 +80,6 @@
       npm:
         name: yarn
         global: yes
-
-    - name: Remove useless packages from the cache
-      become: true
-      apt:
-        autoclean: yes
-
-    - name: Remove dependencies that are no longer required
-      become: true
-      apt:
-        autoremove: yes
 
     - name: Configure Git username
       git_config:
@@ -137,8 +146,8 @@
         dest: ~/.config/nvim/init.vim
         state: link
 
-    - name: Install neovim plugins
-      shell: nvim +PlugUpdate +qall
+    # - name: Install neovim plugins
+    #   shell: nvim +PlugUpdate +qall
 
     - name: Clone aliases configuration
       git:
