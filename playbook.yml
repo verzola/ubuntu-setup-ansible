@@ -1,6 +1,6 @@
 ---
 - name: Install and update packages
-  hosts: virtualbox
+  hosts: all
   tasks:
     - name: Add neovim ppa
       become: true
