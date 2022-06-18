@@ -1,0 +1,7 @@
+[virtualbox]
+192.168.0.116
+
+[virtualbox:vars]
+ansible_user=verzola
+ansible_become_method=sudo
+ansible_become_pass='{{ sudo_password }}'
