@@ -1,6 +1,6 @@
 ---
 - name: Install and update packages
-  hosts: localhost
+  hosts: virtualbox
   tasks:
     - name: Add neovim ppa
       become: true
@@ -41,8 +41,11 @@
           - zip
           - unzip
           - neovim
-          - ansible
           - neofetch
+          - ansible
+          - python3
+          - python3-pip
+          - php-cli
         state: latest
 
     - name: Update packages
@@ -73,7 +76,7 @@
         state: present
         update_cache: true
 
-    - name: install nodejs
+    - name: Install nodejs
       become: true
       apt:
         name: nodejs
@@ -84,6 +87,25 @@
       npm:
         name: yarn
         global: yes
+
+    - name: Add hashicorp gpg key
+      become: true
+      apt_key:
+        url: https://apt.releases.hashicorp.com/gpg
+        state: present
+
+    - name: Add hashicorp repository
+      become: true
+      apt_repository:
+        repo: deb [arch=amd64] https://apt.releases.hashicorp.com {{ ansible_lsb.codename }} main
+        state: present
+        update_cache: true
+
+    - name: Install terraform
+      become: true
+      apt:
+        name: terraform
+        state: present
 
     - name: Configure Git username
       git_config:
@@ -122,6 +144,13 @@
         clone: yes
         update: yes
 
+    - name: Install tmux plugin manager
+      git:
+        repo: https://github.com/tmux-plugins/tpm
+        dest: ~/.tmux/plugins/tpm
+        clone: yes
+        update: yes
+
     - name: Create tmux symbolic link
       file:
         src: ~/projects/verzola/tmux.conf/.tmux.conf
@@ -143,6 +172,11 @@
         src: ~/projects/verzola/vimrc/.vimrc
         dest: ~/.vimrc
         state: link
+
+    - name: Create neovim config folder
+      file:
+        path: ~/.config/nvim
+        state: directory
 
     - name: Create neovim symbolic link
       file:
