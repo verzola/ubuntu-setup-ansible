@@ -191,3 +191,8 @@
         clone: yes
         update: yes
 
+    - name: change user shell to zsh
+      become: yes
+      user:
+        name: vagrant
+        shell: /bin/zsh
