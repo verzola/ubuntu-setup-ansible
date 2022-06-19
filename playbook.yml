@@ -21,31 +21,30 @@
       apt:
         update_cache: yes
         name:
-          - vim
-          - git
-          - zsh
-          - bat
-          - tmux
-          - curl
-          - htop
-          - gcc
-          - g++
-          - make
           - ansible
-          - openssh-server
           - apt-transport-https
-          - ca-certificates
+          - bat
           - build-essential
-          - software-properties-common
-          - openjdk-11-jdk
-          - zip
-          - unzip
-          - neovim
+          - ca-certificates
+          - curl
+          - g++
+          - gcc
+          - git
+          - htop
+          - make
           - neofetch
-          - ansible
+          - neovim
+          - openjdk-11-jdk
+          - openssh-server
+          - php-cli
           - python3
           - python3-pip
-          - php-cli
+          - software-properties-common
+          - tmux
+          - unzip
+          - vim
+          - zip
+          - zsh
         state: latest
 
     - name: Update packages
@@ -172,6 +171,7 @@
         src: ~/projects/verzola/vimrc/.vimrc
         dest: ~/.vimrc
         state: link
+        force: true
 
     - name: Create neovim config folder
       file:
