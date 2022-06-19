@@ -1,5 +1,6 @@
 ---
 - name: Install and update packages
+  hosts: all
   tasks:
     - name: Add neovim ppa
       become: true
