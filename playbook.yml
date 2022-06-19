@@ -188,5 +188,5 @@
     - name: change user shell to zsh
       become: yes
       user:
-        name: vagrant
+        name: verzola
         shell: /bin/zsh
