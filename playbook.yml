@@ -150,6 +150,11 @@
     - name: Install tmux plugins
       shell: ~/.tmux/plugins/tpm/scripts/install_plugins.sh
 
+    - name: Create neovim autoload folder
+      file:
+        path: ~/.local/share/nvim/site/autoload
+        state: directory
+
     - name: Install vim-plug in neovim
       get_url:
         dest: "~/.local/share/nvim/site/autoload/plug.vim"
@@ -165,11 +170,6 @@
     - name: Create neovim config folder
       file:
         path: ~/.config/nvim
-        state: directory
-
-    - name: Create neovim config folder
-      file:
-        path: ~/.local/share/nvim/site/autoload
         state: directory
 
     - name: Create neovim symbolic link
