@@ -16,7 +16,6 @@
         repo: 'ppa:ansible/ansible'
         state: present
 
-
     - name: Add hashicorp gpg key
       become: true
       apt_key:
@@ -72,7 +71,6 @@
           - tmux
           - unzip
           - vagrant
-          - vim
           - virtualbox
           - zip
           - zsh
@@ -152,14 +150,9 @@
     - name: Install tmux plugins
       shell: ~/.tmux/plugins/tpm/scripts/install_plugins.sh
 
-    - name: Create vim config folder
-      file:
-        path: ~/.vim/autoload/
-        state: directory
-
-    - name: Install vim-plug
+    - name: Install vim-plug in neovim
       get_url:
-        dest: "~/.vim/autoload/plug.vim"
+        dest: "~/.local/share/nvim/site/autoload/plug.vim"
         url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
     - name: Clone vim configuration
@@ -169,16 +162,14 @@
         clone: yes
         update: yes
 
-    - name: Create vim symbolic link
-      file:
-        src: ~/projects/verzola/vimrc/.vimrc
-        dest: ~/.vimrc
-        state: link
-        force: true
-
     - name: Create neovim config folder
       file:
         path: ~/.config/nvim
+        state: directory
+
+    - name: Create neovim config folder
+      file:
+        path: ~/.local/share/nvim/site/autoload
         state: directory
 
     - name: Create neovim symbolic link
