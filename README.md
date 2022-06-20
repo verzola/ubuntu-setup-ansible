@@ -1,21 +1,26 @@
 # ubuntu-setup-ansible
 Ansible playbook to setup my development environment.
 
-## Pull and play playbook
+## Dependencies
+- Ubuntu (tested on 20.04)
+- Ansible (to pull or run locally)
+- Vagrant (to test on VM)
+
+## Pull and provision playbook
 ```
 sudo apt update
 sudo apt install ansible
 ansible-pull -U https://github.com/verzola/ubuntu-setup-ansible.git playbook.yml -i "$(hostname --short)," -K
 ```
 
-## Play playbook locally
+## Provision playbook locally
 ```
 git clone https://github.com/verzola/ubuntu-setup-ansible.git
 cd ubuntu-setup-ansible
-./play_local.sh
+./scripts/play_local.sh
 ```
 
-## Play playbook on a VM
+## Provision playbook on a VM
 Vagrant is required.
 ```
 git clone https://github.com/verzola/ubuntu-setup-ansible.git
