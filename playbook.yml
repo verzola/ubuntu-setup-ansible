@@ -1,44 +1,26 @@
 ---
 - name: Install and update packages
   hosts: all
+  vars:
+    apply_to_user: verzola
   tasks:
-    - name: Add neovim ppa
-      become: true
+    - name: Add gpg keys
+      with_items:
+        - https://apt.releases.hashicorp.com/gpg
+        - https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+      apt_key:
+        url: "{{ item }}"
+        state: present
+
+    - name: Add ppas repositories
+      with_items:
+        - ppa:neovim-ppa/stable
+        - ppa:ansible/ansible
+        - deb [arch=amd64] https://apt.releases.hashicorp.com {{ ansible_lsb.codename }} main
+        - deb https://deb.nodesource.com/node_16.x {{ ansible_lsb.codename }} main
       apt_repository:
         validate_certs: no
-        repo: 'ppa:neovim-ppa/stable'
-        state: present
-
-    - name: Add ansible ppa
-      become: true
-      apt_repository:
-        validate_certs: no
-        repo: 'ppa:ansible/ansible'
-        state: present
-
-    - name: Add hashicorp gpg key
-      become: true
-      apt_key:
-        url: https://apt.releases.hashicorp.com/gpg
-        state: present
-
-    - name: Add hashicorp repository
-      become: true
-      apt_repository:
-        repo: deb [arch=amd64] https://apt.releases.hashicorp.com {{ ansible_lsb.codename }} main
-        state: present
-        update_cache: true
-
-    - name: Add nodejs gpg key
-      become: true
-      apt_key:
-        url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
-        state: present
-
-    - name: Add nodejs repository
-      become: true
-      apt_repository:
-        repo: deb https://deb.nodesource.com/node_16.x {{ ansible_lsb.codename }} main
+        repo: "{{ item }}"
         state: present
         update_cache: true
 
@@ -188,5 +170,5 @@
     - name: change user shell to zsh
       become: yes
       user:
-        name: verzola
+        name: "{{ apply_to_user }}"
         shell: /bin/zsh
