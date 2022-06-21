@@ -1,0 +1,15 @@
+---
+- name: Install and update packages
+  hosts: all
+  vars:
+    foo: bar
+  tasks:
+    - name: Install packages
+      become: true
+      apt:
+        update_cache: yes
+        name:
+          - gnome-tweak-tool
+          - gnome-session
+          - steam
+        state: latest
