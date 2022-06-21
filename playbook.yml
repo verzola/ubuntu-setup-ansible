@@ -33,7 +33,6 @@
       apt:
         update_cache: yes
         name:
-          - ansible
           - apt-transport-https
           - bat
           - build-essential
