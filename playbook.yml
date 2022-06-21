@@ -60,6 +60,7 @@
           - virtualbox
           - zip
           - zsh
+          - lm-sensors
         state: latest
 
     - name: Update packages
