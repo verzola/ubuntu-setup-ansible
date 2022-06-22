@@ -4,12 +4,31 @@
   vars:
     foo: bar
   tasks:
+    - name: Add gpg keys
+      become: true
+      with_items:
+        - https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+      apt_key:
+        url: "{{ item }}"
+        state: present
+
+    - name: Add ppas repositories
+      become: true
+      with_items:
+        - deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main
+      apt_repository:
+        validate_certs: no
+        repo: "{{ item }}"
+        state: present
+        update_cache: true
+
     - name: Install packages
       become: true
       apt:
         update_cache: yes
         name:
-          - gnome-tweak-tool
+          - brave-browser
           - gnome-session
+          - gnome-tweak-tool
           - steam
         state: latest
