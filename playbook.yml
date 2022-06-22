@@ -10,6 +10,7 @@
         - https://apt.releases.hashicorp.com/gpg
         - https://deb.nodesource.com/gpgkey/nodesource.gpg.key
         - https://cli.github.com/packages/githubcli-archive-keyring.gpg
+        - https://download.docker.com/linux/ubuntu/gpg
       apt_key:
         url: "{{ item }}"
         state: present
@@ -22,6 +23,7 @@
         - deb [arch=amd64] https://apt.releases.hashicorp.com {{ ansible_lsb.codename }} main
         - deb https://deb.nodesource.com/node_16.x {{ ansible_lsb.codename }} main
         - deb [arch=amd64] https://cli.github.com/packages stable main
+        - deb https://download.docker.com/linux/ubuntu focal stable
       apt_repository:
         validate_certs: no
         repo: "{{ item }}"
@@ -61,6 +63,9 @@
           - zip
           - zsh
           - lm-sensors
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
         state: latest
 
     - name: Update packages
@@ -173,7 +178,13 @@
         update: yes
 
     - name: change user shell to zsh
-      become: yes
+      become: true
       user:
         name: "{{ apply_to_user }}"
         shell: /bin/zsh
+
+    - name: Add user to docker group
+      become: true
+      user:
+        name: "{{ apply_to_user }}"
+        group: docker
